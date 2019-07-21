@@ -21,17 +21,18 @@ class SkipGramModel(nn.Module):
         initrange = 0.5 / self.emb_dimension
         self.d_embeddings.weight.data.uniform_(-initrange, initrange)
         self.u_embeddings.weight.data.uniform_(-initrange, initrange)
-        self.v_embeddings.weight.data.uniform_(-0, 0)
+        self.v_embeddings.weight.data.uniform_(-initrange, initrange)
 
     def forward(self, doc_u, pos_v, neg_v):
 
         emb_u = self.u_embeddings(doc_u)
         emb_v = self.v_embeddings(pos_v)
-        score = torch.mul(emb_u, emb_v).squeeze()
+        score = torch.matmul(emb_u, torch.transpose(emb_v, 0, 1))
         score = torch.sum(score, dim=1)
         score = F.logsigmoid(score)
         neg_emb_v = self.v_embeddings(neg_v)
-        neg_score = torch.bmm(neg_emb_v, emb_u.unsqueeze(2)).squeeze()
+        #emb_u = emb_u.squeeze(0).repeat(neg_v.shape[0],1)
+        neg_score = torch.matmul(neg_emb_v, torch.transpose(emb_u, 0, 1))
         neg_score = torch.sum(neg_score, dim=1)
         neg_score = F.logsigmoid(-1 * neg_score)
         return -1 * (torch.sum(score)+torch.sum(neg_score))
