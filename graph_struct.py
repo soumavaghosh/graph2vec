@@ -18,7 +18,7 @@ class Graph:
     def addEdge(self,u,v): 
         self.graph[u].append(v) 
   
-    def getsub(self, n, d, visited):
+    def bfs(self, n, d, visited):
         for i in n:
             visited[i-1] = True
         
@@ -31,6 +31,21 @@ class Graph:
             for i in n:
                 stk.extend(self.graph[i])
             stk = list(set([x for x in stk if not visited[x-1]]))
-            sub.extend(self.getsub(stk, d-1, visited))
+            sub.extend(self.bfs(stk, d-1, visited))
         
+        return sub
+
+    def getsub(self, n, d):
+        nodes = []
+        for i in range(d):
+            visited = [False]*len(self.graph)
+            nodes.extend(self.bfs([n], i, visited))
+
+        visited = [False] * len(self.graph)
+        leaf = self.bfs([n], d, visited)
+
+        sub = {x:self.graph[x] for x in nodes}
+        for l in leaf:
+            sub[l] = []
+
         return sub
