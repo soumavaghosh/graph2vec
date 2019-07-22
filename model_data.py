@@ -3,6 +3,7 @@ import numpy as np
 from collections import Counter
 from model import SkipGramModel
 import torch.optim as optim
+from torch import nn
 import torch
 
 dataset = "NCI1"
@@ -40,10 +41,11 @@ def init_sample_table():
 
 sample_table = init_sample_table()
 neg_count = 4
-epoch = 20000
+epoch = 200
 
 opt = optim.SGD(model_1.parameters(), lr=0.01)
 model_1.train()
+loss = nn.NLLLoss()
 
 for i in range(epoch):
     opt.zero_grad()
@@ -52,14 +54,14 @@ for i in range(epoch):
     doc_u = torch.tensor([doc_id], dtype=torch.long, requires_grad=False)
 
     pos_v = [np.random.randint(1, len(graph_enc[doc_id]))]
+    pos_v.extend(np.random.choice(sample_table, size=(neg_count)).tolist())
     pos_v = torch.tensor(pos_v, dtype=torch.long, requires_grad=False)
 
-    neg = np.random.choice(sample_table, size=(neg_count)).tolist()
-    neg_v = torch.tensor(neg, dtype=torch.long, requires_grad=False)
+    target = torch.tensor([0], dtype=torch.long, requires_grad=False)
+    loss_val = loss(model_1(doc_u, pos_v), target)
 
-    loss = model_1(doc_u, pos_v, neg_v)
-    print(loss)
-    loss.backward()
+    print(loss_val)
+    loss_val.backward()
     opt.step()
 
 print('Completed')
