@@ -1,11 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Jul 17 16:12:17 2019
-
-@author: c53130a
-"""
-
-from collections import defaultdict 
+from collections import defaultdict
   
 class Graph: 
   

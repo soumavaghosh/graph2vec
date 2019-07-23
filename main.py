@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Jul 18 11:04:22 2019
-
-@author: c53130a
-"""
 import hashlib
 from graph_struct import Graph
 from collections import Counter
@@ -57,7 +51,7 @@ def get_encoding(g):
         c = sorted([node_id_to_graph_id_wl[x] for x in g[i]])
         enc.append([node_id_to_graph_id_wl[i], c])
 
-    enc = sorted(enc, key=lambda x: (x[0], -len(x[1]), x[1]))
+    enc = sorted(enc, key=lambda x: (x[0], -len(x[1])))
 
     for i in enc:
         enc_str += '##' + str(i[0])
