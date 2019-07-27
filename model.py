@@ -13,6 +13,7 @@ class SkipGramModel(nn.Module):
         self.emb_dimension = emb_dimension
         self.d_embeddings = nn.Embedding(doc_size, emb_dimension, sparse=True)
         self.u_embeddings = nn.Embedding(voc_size, emb_dimension, sparse=True)
+        self.v_embeddings = nn.Embedding(voc_size, emb_dimension, sparse=True)
         self.init_emb()
 
     def init_emb(self):
@@ -20,12 +21,18 @@ class SkipGramModel(nn.Module):
         initrange = 0.5 / self.emb_dimension * 10
         self.d_embeddings.weight.data.uniform_(-initrange, initrange)
         self.u_embeddings.weight.data.uniform_(-initrange, initrange)
+        self.v_embeddings.weight.data.uniform_(-initrange, initrange)
 
-    def forward(self, doc_u, pos_v):
+    def forward(self, doc_u, pos_v, neg_v):
 
         emb_d = self.d_embeddings(doc_u)
         emb_v = self.u_embeddings(pos_v)
-        score = torch.matmul(emb_d, torch.transpose(emb_v, 0, 1))
-        score = F.log_softmax(score, dim=1)
+        emb_neg_v = self.u_embeddings(neg_v)
 
-        return score
+        score_pos = torch.matmul(emb_d, torch.transpose(emb_v, 0, 1))
+        score_pos = -torch.sum(F.logsigmoid(score_pos))
+
+        score_neg = torch.matmul(emb_d, torch.transpose(emb_neg_v, 0, 1))
+        score_neg = -torch.sum(F.logsigmoid(-score_neg))
+
+        return score_pos + score_neg
