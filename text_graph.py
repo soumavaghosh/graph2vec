@@ -9,7 +9,7 @@ rem = [',', '.', '?', ':', '...', '-', '"', "'", '!', "'s", "'nt", "'m", "'ve", 
 stop_words.extend(rem)
 
 with open('../amazonreviews/test.ft.txt', 'r', encoding='utf-8') as f:
-    data = f.readlines()
+    data = f.readlines()[:100]
 
 label = ['0' if x.startswith('__label__1 ') else '1' for x in data]
 data = [x[11:] for x in data]
