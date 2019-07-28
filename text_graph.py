@@ -106,7 +106,4 @@ for g in list(graph_id.keys()):
 with open('amazon_graph_voc_3.json', 'wb') as f:
     pickle.dump(graph_id_voc, f)
 
-# sub = graph_id[1].getsub(0,2,len(word_to_id))
-# sub_enc = get_encoding(sub)
-
 print('done')

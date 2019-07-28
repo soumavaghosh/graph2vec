@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="92ea2a71-6d46-40b7-b7da-0585a938fd6a" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/model_data.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/text_graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/text_graph.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -28,6 +29,7 @@
   <component name="ProjectId" id="1Ob3V6o79DW6WgHHEK94lZpdaEy" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
@@ -108,7 +110,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/text_graph.py</url>
-          <line>111</line>
+          <line>108</line>
           <option name="timeStamp" value="27" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">

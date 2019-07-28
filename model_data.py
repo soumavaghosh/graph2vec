@@ -27,12 +27,6 @@ id_to_sub_graph = {i:list(sub_graph_vocab.keys())[i] for i in range(len(sub_grap
 sub_graph_to_id = {id_to_sub_graph[i]:i for i in list(id_to_sub_graph.keys())}
 
 model_1 = SkipGramModel(len(graph_enc), len(id_to_sub_graph), 512)
-#
-# doc_u = torch.tensor([1], dtype=torch.long, requires_grad=False)
-# pos_v = torch.tensor([2], dtype=torch.long, requires_grad=False)
-# neg_v = torch.tensor([6,7], dtype=torch.long, requires_grad=False)
-#
-# loss = model_1(doc_u, pos_v, neg_v)
 
 def init_sample_table():
     sample_table = []
