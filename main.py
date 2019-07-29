@@ -3,7 +3,7 @@ from graph_struct import Graph
 from collections import Counter
 import pickle
 
-dataset = "NCI1"
+dataset = "MUTAG"
 
 with open('./'+dataset+'/'+dataset+'_A.txt', 'r') as f:
     edge = f.readlines()
@@ -36,7 +36,7 @@ for i in range(len(node_id_to_graph_id)):
     l = sorted([node_id_to_node_label[x] for x in s])
     index = ','.join(l)
     index += '-' + node_id_to_node_label[i + 1]
-    index = int(hashlib.sha256(index.encode('utf-8')).hexdigest(), 16)%37
+    index = int(hashlib.sha256(index.encode('utf-8')).hexdigest(), 16)%7
     if not index in list(relabel_dict.keys()):
         relabel_dict[index] = len(relabel_dict)+1
         node_id_to_graph_id_wl[i+1] = len(relabel_dict)+1

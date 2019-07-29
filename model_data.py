@@ -6,9 +6,9 @@ import torch.optim as optim
 from torch import nn
 import torch
 
-dataset = "NCI1"
+dataset = "MUTAG"
 
-with open('./'+dataset+'/graph_voc_2.json', 'rb') as f:
+with open('./'+dataset+'/graph_voc_3.json', 'rb') as f:
     graph_enc = pickle.load(f)
 
 sub_graph_voc = []
@@ -42,21 +42,24 @@ def init_sample_table():
 
 sample_table = init_sample_table()
 neg_count = 2
-epoch = 20000000
+epoch = len(graph_enc)*10
 
-opt = optim.SGD(model_1.parameters(), lr=0.005)
+opt = optim.SparseAdam(model_1.parameters(), lr=0.001)
 model_1.train()
+
+loss_g = {}
 
 for i in range(epoch):
     opt.zero_grad()
 
-    doc_id = np.random.randint(1, len(graph_enc))
-    if len(graph_enc[doc_id])==0:
+    #doc_id = np.random.randint(1, len(graph_enc))
+    doc_id = i % len(graph_enc)
+    if len(graph_enc[doc_id+1])==0:
         continue
     doc_u = torch.tensor([doc_id], dtype=torch.long, requires_grad=False)
 
-    pos_v = [sub_graph_to_id[x] for x in graph_enc[doc_id]]
-
+    pos_v = [sub_graph_to_id[x] for x in graph_enc[doc_id+1]]
+    loss = []
     for p in pos_v:
 
         while(True):
@@ -69,8 +72,18 @@ for i in range(epoch):
 
         loss_val = model_1(doc_u, pos, neg_v)
 
-        print(loss_val)
+        print(str(i)+'   '+str(loss_val))
+        loss.append(loss_val.data.numpy())
         loss_val.backward()
         opt.step()
 
+    if doc_id not in list(loss_g.keys()):
+        loss_g[doc_id] = [np.mean(loss)]
+    else:
+        loss_g[doc_id].append(np.mean(loss))
+
 print('Completed')
+
+iter_loss = [np.mean([loss_g[x][i] for x in list(loss_g.keys())]) for i in range(10)]
+
+print('done')
