@@ -3,9 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="92ea2a71-6d46-40b7-b7da-0585a938fd6a" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/amazon_graph_voc_3.json" beforeDir="false" afterPath="$PROJECT_DIR$/amazon_graph_voc_3.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/model_data.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -111,7 +108,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/model_data.py</url>
-          <line>84</line>
+          <line>94</line>
           <option name="timeStamp" value="48" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -121,7 +118,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/model_data.py</url>
-          <line>88</line>
+          <line>102</line>
           <option name="timeStamp" value="51" />
         </line-breakpoint>
       </breakpoints>
