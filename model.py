@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
+import pickle
 
 class SkipGramModel(nn.Module):
 
@@ -18,7 +18,7 @@ class SkipGramModel(nn.Module):
 
     def init_emb(self):
 
-        initrange = 0.5 / self.emb_dimension * 10
+        initrange = 0.5 / self.emb_dimension*10
         self.d_embeddings.weight.data.uniform_(-initrange, initrange)
         self.u_embeddings.weight.data.uniform_(-initrange, initrange)
         self.v_embeddings.weight.data.uniform_(-initrange, initrange)
@@ -36,3 +36,13 @@ class SkipGramModel(nn.Module):
         score_neg = -torch.sum(F.logsigmoid(-score_neg))
 
         return score_pos + score_neg
+
+    def save_embedding(self, cuda, dataset):
+
+        if cuda:
+            doc_emb = self.d_embeddings.weight.data.cpu().numpy()
+        else:
+            doc_emb = self.d_embeddings.weight.data.numpy()
+
+        with open('./' + dataset + '/weights.txt', 'wb') as f:
+            pickle.dump(doc_emb, f)

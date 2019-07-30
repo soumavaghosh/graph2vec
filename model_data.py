@@ -6,7 +6,7 @@ import torch.optim as optim
 from torch import nn
 import torch
 
-dataset = "MUTAG"
+dataset = "NCI1"
 
 with open('./'+dataset+'/graph_voc_3.json', 'rb') as f:
     graph_enc = pickle.load(f)
@@ -26,7 +26,7 @@ for g in list(graph_enc.keys()):
 id_to_sub_graph = {i:list(sub_graph_vocab.keys())[i] for i in range(len(sub_graph_vocab))}
 sub_graph_to_id = {id_to_sub_graph[i]:i for i in list(id_to_sub_graph.keys())}
 
-model_1 = SkipGramModel(len(graph_enc), len(id_to_sub_graph), 512)
+model_1 = SkipGramModel(len(graph_enc), len(id_to_sub_graph), 1024)
 
 def init_sample_table():
     sample_table = []
@@ -42,14 +42,19 @@ def init_sample_table():
 
 sample_table = init_sample_table()
 neg_count = 2
-epoch = len(graph_enc)*10
+epoch = 20
 
-opt = optim.SparseAdam(model_1.parameters(), lr=0.001)
+opt = optim.SparseAdam(model_1.parameters(), lr=0.0001)
 model_1.train()
+
+cuda = False
+if torch.cuda.is_available():
+    cuda = True
+    model_1.cuda()
 
 loss_g = {}
 
-for i in range(epoch):
+for i in range(len(graph_enc)*epoch):
     opt.zero_grad()
 
     #doc_id = np.random.randint(1, len(graph_enc))
@@ -70,10 +75,15 @@ for i in range(epoch):
         pos = torch.tensor([p], dtype=torch.long, requires_grad=False)
         neg_v = torch.tensor(neg_v, dtype=torch.long, requires_grad=False)
 
+        if cuda:
+            doc_u = doc_u.cuda()
+            pos = pos.cuda()
+            neg_v = neg_v.cuda()
+
         loss_val = model_1(doc_u, pos, neg_v)
 
         print(str(i)+'   '+str(loss_val))
-        loss.append(loss_val.data.numpy())
+        loss.append(loss_val.data.cpu().numpy())
         loss_val.backward()
         opt.step()
 
@@ -84,6 +94,13 @@ for i in range(epoch):
 
 print('Completed')
 
-iter_loss = [np.mean([loss_g[x][i] for x in list(loss_g.keys())]) for i in range(10)]
+iter_loss = [np.mean([loss_g[x][i] for x in list(loss_g.keys())]) for i in range(epoch)]
+print(iter_loss)
 
-print('done')
+with open('./' + dataset + '/loss.json', 'wb') as f:
+    pickle.dump(loss_g, f)
+
+with open('./' + dataset + '/iter_loss.json', 'wb') as f:
+    pickle.dump(iter_loss, f)
+
+model_1.save_embedding(cuda, dataset)
