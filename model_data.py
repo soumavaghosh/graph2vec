@@ -54,43 +54,48 @@ if torch.cuda.is_available():
 
 loss_g = {}
 
-for i in range(len(graph_enc)*epoch):
-    opt.zero_grad()
+for i in range(epoch):
+    for j in range(len(graph_enc)):
+        opt.zero_grad()
 
-    #doc_id = np.random.randint(1, len(graph_enc))
-    doc_id = i % len(graph_enc)
-    if len(graph_enc[doc_id+1])==0:
-        continue
-    doc_u = torch.tensor([doc_id], dtype=torch.long, requires_grad=False)
+        # doc_id = np.random.randint(1, len(graph_enc))
+        doc_id = j
+        if len(graph_enc[doc_id + 1]) == 0:
+            continue
+        doc_u = torch.tensor([doc_id], dtype=torch.long, requires_grad=False)
 
-    pos_v = [sub_graph_to_id[x] for x in graph_enc[doc_id+1]]
-    loss = []
-    for p in pos_v:
+        pos_v = [sub_graph_to_id[x] for x in graph_enc[doc_id + 1]]
+        loss = []
+        for p in pos_v:
 
-        while(True):
-            neg_v = np.random.choice(sample_table, size=(neg_count)).tolist()
-            if p not in neg_v:
-                break
+            while (True):
+                neg_v = np.random.choice(sample_table, size=(neg_count)).tolist()
+                if p not in neg_v:
+                    break
 
-        pos = torch.tensor([p], dtype=torch.long, requires_grad=False)
-        neg_v = torch.tensor(neg_v, dtype=torch.long, requires_grad=False)
+            pos = torch.tensor([p], dtype=torch.long, requires_grad=False)
+            neg_v = torch.tensor(neg_v, dtype=torch.long, requires_grad=False)
 
-        if cuda:
-            doc_u = doc_u.cuda()
-            pos = pos.cuda()
-            neg_v = neg_v.cuda()
+            if cuda:
+                doc_u = doc_u.cuda()
+                pos = pos.cuda()
+                neg_v = neg_v.cuda()
 
-        loss_val = model_1(doc_u, pos, neg_v)
+            loss_val = model_1(doc_u, pos, neg_v)
 
-        print(str(i)+'   '+str(loss_val))
-        loss.append(loss_val.data.cpu().numpy())
-        loss_val.backward()
-        opt.step()
+            # print(str(i)+'   '+str(loss_val))
+            loss.append(loss_val.data.cpu().numpy())
+            loss_val.backward()
+            opt.step()
 
-    if doc_id not in list(loss_g.keys()):
-        loss_g[doc_id] = [np.mean(loss)]
-    else:
-        loss_g[doc_id].append(np.mean(loss))
+        if doc_id not in list(loss_g.keys()):
+            loss_g[doc_id] = [np.mean(loss)]
+        else:
+            loss_g[doc_id].append(np.mean(loss))
+
+    l = np.mean([loss_g[k][i] for k in list(loss_g.keys())])
+
+    print('epoch - ' + str(i) + '\tloss - ' + str(l))
 
 print('Completed')
 
