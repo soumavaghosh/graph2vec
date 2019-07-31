@@ -5,17 +5,19 @@ import numpy as np
 
 kf = KFold(n_splits=10, shuffle=True)
 
+dataset = 'NCI109'
 
 def calc(dataset):
     with open('./' + dataset + '/weights.txt', 'rb') as f:
-        X = pickle.load(f, encoding='latin1')
+        X = pickle.load(f)
 
     with open('./' + dataset + '/' + dataset + '_graph_labels.txt', 'r') as f:
         label = f.readlines()
 
     y = [1 if x.strip() == '1' else 0 for x in label]
 
-    acc = []
+    acc_train = []
+    acc_test = []
 
     ind = list(range(len(y)))
 
@@ -25,16 +27,26 @@ def calc(dataset):
         X_test = np.array([X[i, :] for i in test])
         y_test = np.array([y[i] for i in test])
 
-        clf = LogisticRegression(random_state=0, solver='lbfgs', multi_class='multinomial').fit(X_train, y_train)
+        clf = LogisticRegression(C = 0.25).fit(X_train, y_train)
 
         y_pred = list(clf.predict(X_test))
 
-        acc.append(np.sum([1 if y_pred[i] == y_test[i] else 0 for i in range(len(y_test))]) / len(y_test))
+        acc_test.append(np.sum([1 if y_pred[i] == y_test[i] else 0 for i in range(len(y_test))]) / len(y_test))
+        
+        y_pred = list(clf.predict(X_train))
 
-    return acc
+        acc_train.append(np.sum([1 if y_pred[i] == y_train[i] else 0 for i in range(len(y_train))]) / len(y_train))
 
+    return acc_train, acc_test
 
-acc = calc('NCI1')
+dataset = 'NCI109'
+acc_train, acc_test = calc(dataset)
 
-print(np.mean(acc))
-print(np.std(acc))
+with open('./' + dataset + '/iter_loss.json', 'rb') as f:
+    iter_loss = pickle.load(f)
+
+print(np.mean(acc_train))
+print(np.std(acc_train))
+
+print(np.mean(acc_test))
+print(np.std(acc_test))
