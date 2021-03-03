@@ -12,12 +12,34 @@ The repo has been developed from scratch in PyTorch. The official repository for
 }
   ```
 
+# 
+
 # Performances
 
-For the branch **master**, the training of the transductive learning on Cora task on a Titan Xp takes ~0.9 sec per epoch and 10-15 minutes for the whole training (~800 epochs). The final accuracy is between 84.2 and 85.3 (obtained on 5 different runs). For the branch **similar_impl_tensorflow**, the training takes less than 1 minute and reach ~83.0.
+This implementation achieves results at par with results stated in original graph2vec work by Narayanan et. al (2017). The results are stated on MUTAG, PTC_MR, PROTEINS, NCI1, NCI109.
 
-A small note about initial sparse matrix operations of https://github.com/tkipf/pygcn: they have been removed. Therefore, the current model take ~7GB on GRAM.
+| Dataset | Accuracy |
+| ------------- | ------------- |
+| MUTAG | 76.02% |
+| PTC_MR | 62.5% |
+| MROTEINS | 71.42% |
+| NCI1 | 83.02% |
+| NCI109 | 81.68% |
 
+
+# Instructions
+
+To execute model training mention the dataset name in `dataset` variable in `main.py` and `model_data.py` file.
+
+Execute the following command to convert the graph into subgraph units after WL relabeling:
+```sh
+$ python main.py
+```
+
+Post creation of subgraph, execute following command to initiate model training:
+```sh
+$ python model_data.py
+```
 
 # Requirements
 
